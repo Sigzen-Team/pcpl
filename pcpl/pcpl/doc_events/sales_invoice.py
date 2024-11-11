@@ -127,7 +127,9 @@ def before_save(self, method):
     set_income_account(self)
 
 def before_submit(self, method):
-    tax_validation(self)
+    for item in self.items:
+        if not item.gst_treatment == "Nil-Rated":
+            tax_validation(self)
 
 def set_income_account(self):
     if self.income_account:
