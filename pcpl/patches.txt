@@ -1,0 +1,4 @@
+[pre_model_sync]
+pcpl.patches.delivery_note
+
+[post_model_sync]
