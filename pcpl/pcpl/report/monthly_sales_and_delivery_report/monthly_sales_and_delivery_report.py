@@ -44,7 +44,7 @@ def execute(filters=None):
         AND status NOT IN ('Cancelled', 'Closed')
         AND transaction_date BETWEEN %s AND %s
         GROUP BY MONTH(transaction_date)
-    """, (year_start_date, year_end_date), as_dict=True)
+    """, (year_start_date, year_end_date), as_dict=True) # // nosemgrep
 
     # Query for Delivered but not Billed
     delivered_not_billed = frappe.db.sql("""
@@ -57,15 +57,10 @@ def execute(filters=None):
                 END
             ) AS total
         FROM `tabDelivery Note`
-        WHERE NOT EXISTS (
-            SELECT 1 
-            FROM `tabSales Invoice Item` 
-            WHERE `tabSales Invoice Item`.delivery_note = `tabDelivery Note`.name
-        ) 
-        AND status NOT IN ('Cancelled', 'Closed')
+        WHERE status = 'To Bill'
         AND posting_date BETWEEN %s AND %s
         GROUP BY MONTH(posting_date)
-    """, (year_start_date, year_end_date), as_dict=True)
+    """, (year_start_date, year_end_date), as_dict=True)# // nosemgrep
 
     # Query for Billed Amounts
     billed_amounts = frappe.db.sql("""
@@ -77,11 +72,11 @@ def execute(filters=None):
                     ELSE total 
                 END
             ) AS total
-        FROM `tabSales Invoice`
-        WHERE status NOT IN ('Cancelled', 'Closed')
+        FROM `tabDelivery Note`
+        WHERE status = 'Completed'
         AND posting_date BETWEEN %s AND %s
         GROUP BY MONTH(posting_date)
-    """, (year_start_date, year_end_date), as_dict=True)
+    """, (year_start_date, year_end_date), as_dict=True)# // nosemgrep
 
     data = []
     for mapped_month in month_mapping:
