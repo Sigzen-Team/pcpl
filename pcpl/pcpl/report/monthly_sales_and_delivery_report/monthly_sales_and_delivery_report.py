@@ -18,17 +18,21 @@ def execute(filters=None):
     year_end_date = frappe.db.get_value("Fiscal Year", {'name': financial_year}, ['year_end_date'])
 
     month_names = [
-        'January', 'February', 'March', 'April', 'May', 'June',
-        'July', 'August', 'September', 'October', 'November', 'December'
+        'April', 'May', 'June', 'July', 'August', 'September', 
+        'October', 'November', 'December', 'January', 'February', 'March'
     ]
 
+    # Map months from April to March
+    month_mapping = list(range(4, 13)) + list(range(1, 4))
+
+    # Query for Pending Orders
     pending_orders = frappe.db.sql("""
         SELECT 
             MONTH(transaction_date) AS month, 
             SUM(
                 CASE 
                     WHEN currency = 'USD' THEN base_rounded_total 
-                    ELSE rounded_total 
+                    ELSE total 
                 END
             ) AS total
         FROM `tabSales Order`
@@ -36,18 +40,20 @@ def execute(filters=None):
             SELECT 1 
             FROM `tabDelivery Note Item` 
             WHERE `tabDelivery Note Item`.against_sales_order = `tabSales Order`.name
-        ) 
+        )
+        AND status NOT IN ('Cancelled', 'Closed')
         AND transaction_date BETWEEN %s AND %s
         GROUP BY MONTH(transaction_date)
-    """, (year_start_date, year_end_date), as_dict=True) #// nosamegrep
+    """, (year_start_date, year_end_date), as_dict=True)
 
+    # Query for Delivered but not Billed
     delivered_not_billed = frappe.db.sql("""
         SELECT 
             MONTH(posting_date) AS month, 
             SUM(
                 CASE 
                     WHEN currency = 'USD' THEN base_rounded_total 
-                    ELSE rounded_total 
+                    ELSE total 
                 END
             ) AS total
         FROM `tabDelivery Note`
@@ -56,31 +62,34 @@ def execute(filters=None):
             FROM `tabSales Invoice Item` 
             WHERE `tabSales Invoice Item`.delivery_note = `tabDelivery Note`.name
         ) 
+        AND status NOT IN ('Cancelled', 'Closed')
         AND posting_date BETWEEN %s AND %s
         GROUP BY MONTH(posting_date)
-    """, (year_start_date, year_end_date), as_dict=True) # // nosemgrep
+    """, (year_start_date, year_end_date), as_dict=True)
 
+    # Query for Billed Amounts
     billed_amounts = frappe.db.sql("""
         SELECT 
             MONTH(posting_date) AS month, 
             SUM(
                 CASE 
                     WHEN currency = 'USD' THEN base_rounded_total 
-                    ELSE rounded_total 
+                    ELSE total 
                 END
             ) AS total
         FROM `tabSales Invoice`
-        WHERE posting_date BETWEEN %s AND %s
+        WHERE status NOT IN ('Cancelled', 'Closed')
+        AND posting_date BETWEEN %s AND %s
         GROUP BY MONTH(posting_date)
-    """, (year_start_date, year_end_date), as_dict=True) # // nosemgrep
-
+    """, (year_start_date, year_end_date), as_dict=True)
 
     data = []
-    for month in range(1, 13):
-        pending = next((item.total for item in pending_orders if item.month == month), 0)
-        delivered = next((item.total for item in delivered_not_billed if item.month == month), 0)
-        billed = next((item.total for item in billed_amounts if item.month == month), 0)
+    for mapped_month in month_mapping:
+        pending = next((item.total for item in pending_orders if item.month == mapped_month), 0)
+        delivered = next((item.total for item in delivered_not_billed if item.month == mapped_month), 0)
+        billed = next((item.total for item in billed_amounts if item.month == mapped_month), 0)
         total = pending + delivered + billed
-        data.append([month_names[month - 1], pending, delivered, billed, total])
+        month_index = month_mapping.index(mapped_month)
+        data.append([month_names[month_index], pending, delivered, billed, total])
 
     return columns, data
