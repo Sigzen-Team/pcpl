@@ -72,8 +72,8 @@ def execute(filters=None):
                     ELSE total 
                 END
             ) AS total
-        FROM `tabDelivery Note`
-        WHERE status = 'Completed'
+        FROM `tabSales Invoice`
+        WHERE status NOT IN ('Cancelled', 'Draft')
         AND posting_date BETWEEN %s AND %s
         GROUP BY MONTH(posting_date)
     """, (year_start_date, year_end_date), as_dict=True)# // nosemgrep
