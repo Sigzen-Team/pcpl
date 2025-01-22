@@ -1,0 +1,52 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2025-01-17 10:28:45.288846",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Account Ledger",
+ "letterhead": null,
+ "modified": "2025-01-17 11:44:47.410106",
+ "modified_by": "Administrator",
+ "module": "Pcpl",
+ "name": "Monthly Sales and Delivery Report",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "Sales Order",
+ "report_name": "Monthly Sales and Delivery Report",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Stock User"
+  },
+  {
+   "role": "Sales Manager"
+  },
+  {
+   "role": "PS Sales Support"
+  },
+  {
+   "role": "Accounts User"
+  },
+  {
+   "role": "PS  Create Entry Sales & Dispatch"
+  },
+  {
+   "role": "PS Check Entry Sales & Dispatch"
+  },
+  {
+   "role": "PS Approve Entry Accounts"
+  },
+  {
+   "role": "PS Check Entry Accounts"
+  },
+  {
+   "role": "PS Create Entry Purchase"
+  }
+ ],
+ "timeout": 0
+}
