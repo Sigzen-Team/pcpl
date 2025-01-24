@@ -27,24 +27,21 @@ def execute(filters=None):
 
     # Query for Pending Orders
     pending_orders = frappe.db.sql("""
-        SELECT 
-            MONTH(transaction_date) AS month, 
-            SUM(
-                CASE 
-                    WHEN currency = 'USD' THEN base_rounded_total 
-                    ELSE total 
-                END
-            ) AS total
-        FROM `tabSales Order`
-        WHERE NOT EXISTS (
-            SELECT 1 
-            FROM `tabDelivery Note Item` 
-            WHERE `tabDelivery Note Item`.against_sales_order = `tabSales Order`.name
-        )
-        AND status NOT IN ('Cancelled', 'Closed')
-        AND transaction_date BETWEEN %s AND %s
-        GROUP BY MONTH(transaction_date)
-    """, (year_start_date, year_end_date), as_dict=True) # // nosemgrep
+        SELECT
+        MONTH(so.transaction_date) AS month,
+        SUM(soi.base_amount - (soi.billed_amt * IFNULL(so.conversion_rate, 1))) AS total
+    FROM
+        `tabSales Order` so,
+        `tabSales Order Item` soi
+    LEFT JOIN `tabSales Invoice Item` sii
+        ON sii.so_detail = soi.name AND sii.docstatus = 1
+    WHERE
+        soi.parent = so.name
+        AND so.status = "To Deliver and Bill"
+        AND so.docstatus = 1
+        AND so.transaction_date BETWEEN %s AND %s
+    GROUP BY MONTH(so.transaction_date)
+    """,(year_start_date, year_end_date), as_dict=True) # // nosemgrep
 
     # Query for Delivered but not Billed
     delivered_not_billed = frappe.db.sql("""
@@ -52,7 +49,7 @@ def execute(filters=None):
             MONTH(posting_date) AS month, 
             SUM(
                 CASE 
-                    WHEN currency = 'USD' THEN base_rounded_total 
+                    WHEN currency = 'USD' OR (currency = 'INR' AND price_list_currency = 'USD') THEN base_rounded_total 
                     ELSE total 
                 END
             ) AS total
@@ -68,7 +65,7 @@ def execute(filters=None):
             MONTH(posting_date) AS month, 
             SUM(
                 CASE 
-                    WHEN currency = 'USD' THEN base_rounded_total 
+                    WHEN currency = 'USD' OR (currency = 'INR' AND price_list_currency = 'USD') THEN base_rounded_total 
                     ELSE total 
                 END
             ) AS total
@@ -88,3 +85,4 @@ def execute(filters=None):
         data.append([month_names[month_index], pending, delivered, billed, total])
 
     return columns, data
+
