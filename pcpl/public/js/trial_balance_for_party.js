@@ -121,7 +121,16 @@ frappe.query_reports["Trial Balance for Party"] = {
 frappe.provide("finbyzerp")
 finbyzerp.view_party_ledger_report = {
     view_party_ledger_report: function(company, from_date, to_date, account, party_type, party){
-		window.open(window.location.href.split('app')[0] + "app/query-report/Party Ledger" + "/?" + "company=" + company + "&" +  "from_date="+ from_date + "&" + "to_date=" +to_date + "&"+"account="+encodeURIComponent(account)+"&"+"party_type="+party_type + "&" +"party="+encodeURIComponent(party),"_blank")
+        // Ensure account is properly handled (if None, don't include it)
+        let url = window.location.href.split('app')[0] + "app/query-report/General Ledger" 
+                + "/?" + "company=" + encodeURIComponent(company) 
+                + "&from_date=" + encodeURIComponent(from_date) 
+                + "&to_date=" + encodeURIComponent(to_date) 
+                + (account ? "&account=" + encodeURIComponent(account) : "")  // Include only if not empty
+                + "&party_type=" + encodeURIComponent(party_type) 
+                + "&party=" + encodeURIComponent(party);
 
+        // Open in new tab
+        window.open(url, "_blank");
     }
 }
