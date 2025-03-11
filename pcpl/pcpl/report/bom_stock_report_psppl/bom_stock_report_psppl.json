@@ -1,0 +1,34 @@
+{
+ "add_total_row": 1,
+ "columns": [],
+ "creation": "2025-03-11 16:53:40.687040",
+ "disabled": 0,
+ "docstatus": 0,
+ "doctype": "Report",
+ "filters": [],
+ "idx": 0,
+ "is_standard": "Yes",
+ "letter_head": "Account Ledger",
+ "letterhead": null,
+ "modified": "2025-03-11 16:53:40.687040",
+ "modified_by": "Administrator",
+ "module": "Pcpl",
+ "name": "BOM Stock Report PSPPL",
+ "owner": "Administrator",
+ "prepared_report": 0,
+ "ref_doctype": "BOM",
+ "report_name": "BOM Stock Report PSPPL",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "Manufacturing Manager"
+  },
+  {
+   "role": "Manufacturing User"
+  },
+  {
+   "role": "Data Import/Export"
+  }
+ ],
+ "timeout": 0
+}
