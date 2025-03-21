@@ -122,28 +122,28 @@ def update_discounted_price(self, method):
 
         item.rate = item_rate
 
-@frappe.whitelist()
-def search_link(
-	doctype: str,
-	txt: str,
-	query: str | None = None,
-	filters: str | dict | list | None = None,
-	page_length: int = 10,
-	searchfield: str | None = None,
-	reference_doctype: str | None = None,
-	ignore_user_permissions: bool = False,
-) -> list[LinkSearchResults]:
-	results = search_widget(
-		doctype,
-		txt.strip(),
-		query,
-		searchfield=searchfield,
-		page_length=page_length,
-		filters=filters,
-		reference_doctype=reference_doctype,
-		ignore_user_permissions=ignore_user_permissions,
-	)
-	return build_for_autosuggest(results, doctype=doctype)
+# @frappe.whitelist()
+# def search_link(
+# 	doctype: str,
+# 	txt: str,
+# 	query: str | None = None,
+# 	filters: str | dict | list | None = None,
+# 	page_length: int = 10,
+# 	searchfield: str | None = None,
+# 	reference_doctype: str | None = None,
+# 	ignore_user_permissions: bool = False,
+# ) -> list[LinkSearchResults]:
+# 	results = search_widget(
+# 		doctype,
+# 		txt.strip(),
+# 		query,
+# 		searchfield=searchfield,
+# 		page_length=page_length,
+# 		filters=filters,
+# 		reference_doctype=reference_doctype,
+# 		ignore_user_permissions=ignore_user_permissions,
+# 	)
+# 	return build_for_autosuggest(results, doctype=doctype)
 
 @frappe.whitelist()
 def search_widget(
