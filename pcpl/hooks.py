@@ -161,7 +161,10 @@ doc_events = {
 #
 override_whitelisted_methods = {
 	"frappe.desk.search.search_widget": "pcpl.api.search_widget",
-	"frappe.desk.search.search_link": "pcpl.api.search_link",
+	# "frappe.desk.search.search_link": "pcpl.api.search_link",
+}
+override_doctype_class = {
+    "File": "pcpl.override.file.CustomFile"
 }
 #
 # each overriding function accepts a `data` argument;
