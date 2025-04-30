@@ -9,6 +9,13 @@ frappe.query_reports["Monthly Sales and Delivery Report"] = {
             "fieldtype": "Link",
             "options": "Fiscal Year",
             "reqd": 1
+        },
+        {
+            "fieldname": "company",
+            "label": __("Company"),
+            "fieldtype": "Link",
+            "options": "Company",
+            "reqd": 1
         }
     ]
 };
