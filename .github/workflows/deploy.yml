@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: Executing the Script to Add CronJob 
         env:
-          cron: "15 17 * * *"
+          cron: "56 15 * * *"
         run: |
           echo "${{ secrets.SSH_KEY }}" > ssh.pem
           chmod 600 ssh.pem
