@@ -16,6 +16,7 @@ def execute(filters=None):
     financial_year = filters.get("financial_year") if filters else None
     year_start_date = frappe.db.get_value("Fiscal Year", {'name': financial_year}, ['year_start_date'])
     year_end_date = frappe.db.get_value("Fiscal Year", {'name': financial_year}, ['year_end_date'])
+    company = filters.get("company") if filters else None
 
     month_names = [
         'April', 'May', 'June', 'July', 'August', 'September', 
@@ -40,8 +41,9 @@ def execute(filters=None):
         AND so.status = "To Deliver and Bill"
         AND so.docstatus = 1
         AND so.transaction_date BETWEEN %s AND %s
+        AND so.company = %s
     GROUP BY MONTH(so.transaction_date)
-    """,(year_start_date, year_end_date), as_dict=True) # // nosemgrep
+    """,(year_start_date, year_end_date, company), as_dict=True) # // nosemgrep
 
     # Query for Delivered but not Billed
     delivered_not_billed = frappe.db.sql("""
@@ -56,8 +58,9 @@ def execute(filters=None):
         FROM `tabDelivery Note`
         WHERE status = 'To Bill'
         AND posting_date BETWEEN %s AND %s
+        AND company = %s
         GROUP BY MONTH(posting_date)
-    """, (year_start_date, year_end_date), as_dict=True)# // nosemgrep
+    """, (year_start_date, year_end_date, company), as_dict=True)# // nosemgrep
 
     # Query for Billed Amounts
     billed_amounts = frappe.db.sql("""
@@ -72,8 +75,9 @@ def execute(filters=None):
         FROM `tabSales Invoice`
         WHERE status NOT IN ('Cancelled', 'Draft')
         AND posting_date BETWEEN %s AND %s
+        AND company = %s
         GROUP BY MONTH(posting_date)
-    """, (year_start_date, year_end_date), as_dict=True)# // nosemgrep
+    """, (year_start_date, year_end_date, company), as_dict=True)# // nosemgrep
 
     data = []
     for mapped_month in month_mapping:
