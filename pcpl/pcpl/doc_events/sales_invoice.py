@@ -5,49 +5,49 @@ from frappe.utils import flt
 def on_submit(self, method):
     if self.due_date < self.posting_date:
         frappe.throw("Due Date can not be before posting date.")
-    for d in self.get("items"):
-        if(d.item_tax_template == "CGST AND SGST 18 %"):
-            if(d.gst_amount != (d.amount * 0.18)):
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "CGST AND SGST 28 %"):
-            if(d.gst_amount != (d.amount * 0.28)):
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "CGST AND SGST 12 %"):
-            if(d.gst_amount != (d.amount * 0.12)):
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "CGST AND SGST 5 %"):
-            if(d.gst_amount != (d.amount * 0.05)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "CGST AND SGST 0.1 %"):
-            if(d.gst_amount != (d.amount * 0.001)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "CGST AND SGST 0 %"):
-            if(d.gst_amount != (d.amount * 0)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 12% Export - PC"):
-            if(d.gst_amount != (d.amount * 0.12)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 18% Export - PC"):
-            if(d.gst_amount != (d.amount * 0.18)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 18 %"):
-            if(d.gst_amount != (d.amount * 0.18)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 28 %"):
-            if(d.gst_amount != (d.amount * 0.28)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 12 %"):
-            if(d.gst_amount != (d.amount * 0.12)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 5 %"):
-            if(d.gst_amount != (d.amount * 0.05)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 0.1 %"):
-            if(d.gst_amount != (d.amount * 0.001)): 
-                frappe.throw("GST Amount is Invalid")
-        if(d.item_tax_template == "IGST 0 %"):
-            if(d.gst_amount != (d.amount * 0)): 
-                frappe.throw("GST Amount is Invalid")
+    # for d in self.get("items"):
+    #     if(d.item_tax_template == "CGST AND SGST 18 %"):
+    #         if(d.gst_amount != (d.amount * 0.18)):
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "CGST AND SGST 28 %"):
+    #         if(d.gst_amount != (d.amount * 0.28)):
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "CGST AND SGST 12 %"):
+    #         if(d.gst_amount != (d.amount * 0.12)):
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "CGST AND SGST 5 %"):
+    #         if(d.gst_amount != (d.amount * 0.05)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "CGST AND SGST 0.1 %"):
+    #         if(d.gst_amount != (d.amount * 0.001)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "CGST AND SGST 0 %"):
+    #         if(d.gst_amount != (d.amount * 0)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 12% Export - PC"):
+    #         if(d.gst_amount != (d.amount * 0.12)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 18% Export - PC"):
+    #         if(d.gst_amount != (d.amount * 0.18)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 18 %"):
+    #         if(d.gst_amount != (d.amount * 0.18)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 28 %"):
+    #         if(d.gst_amount != (d.amount * 0.28)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 12 %"):
+    #         if(d.gst_amount != (d.amount * 0.12)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 5 %"):
+    #         if(d.gst_amount != (d.amount * 0.05)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 0.1 %"):
+    #         if(d.gst_amount != (d.amount * 0.001)): 
+    #             frappe.throw("GST Amount is Invalid")
+    #     if(d.item_tax_template == "IGST 0 %"):
+    #         if(d.gst_amount != (d.amount * 0)): 
+    #             frappe.throw("GST Amount is Invalid")
 
     validate_rate(self)
 
@@ -86,43 +86,44 @@ def validate(self, method):
     # 					msg=f"Row No {i.item_code} Should not be free"
     # 					)
 def before_validate(self,method):
-    for d in self.get('items'):
-        if(d.price_list_rate != 0):
-            d.gross_amount = d.qty * d.price_list_rate
-        if(d.gross_amount != 0):
-            d.discount_amount_total = (flt(d.gross_amount) * flt(d.discount_percentage))/100
-        if(d.item_tax_template == "CGST AND SGST 18 %"):
-            d.gst_amount = d.amount * 0.18
-        if(d.item_tax_template == "CGST AND SGST 28 %"):
-            d.gst_amount = d.amount * 0.28
-        if(d.item_tax_template == "CGST AND SGST 12 %"):
-            d.gst_amount = d.amount * 0.12
-        if(d.item_tax_template == "CGST AND SGST 5 %"):
-            d.gst_amount = d.amount * 0.05
-        if(d.item_tax_template == "CGST AND SGST 0.1 %"):
-            d.gst_amount = d.amount * 0.001
-        if(d.item_tax_template == "CGST AND SGST 0 %"):
-            d.gst_amount = d.amount * 0  
-        if(d.item_tax_template == "IGST 12% Export - PC"):
-            d.gst_amount = d.amount * 0.12
-        if(d.item_tax_template == "IGST 18% Export - PC"):
-            d.gst_amount = d.amount * 0.18
-        if(d.item_tax_template == "IGST 18 %"):
-            d.gst_amount = d.amount * 0.18
-        if(d.item_tax_template == "IGST 28 %"):
-            d.gst_amount = d.amount * 0.28
-        if(d.item_tax_template == "IGST 12 %"):
-            d.gst_amount = d.amount * 0.12
-        if(d.item_tax_template == "IGST 5 %"):
-            d.gst_amount = d.amount * 0.05
-        if(d.item_tax_template == "IGST 0.1 %"):
-            d.gst_amount = d.amount * 0.001
-        if(d.item_tax_template == "IGST 0 %"):
-            d.gst_amount = d.amount * 0 
-        if not d.item_tax_template:
-            d.gst_amount = 0
+    pass
+    # for d in self.get('items'):
+    #     if(d.price_list_rate != 0):
+    #         d.gross_amount = d.qty * d.price_list_rate
+    #     if(d.gross_amount != 0):
+    #         d.discount_amount_total = (flt(d.gross_amount) * flt(d.discount_percentage))/100
+    #     if(d.item_tax_template == "CGST AND SGST 18 %"):
+    #         d.gst_amount = d.amount * 0.18
+    #     if(d.item_tax_template == "CGST AND SGST 28 %"):
+    #         d.gst_amount = d.amount * 0.28
+    #     if(d.item_tax_template == "CGST AND SGST 12 %"):
+    #         d.gst_amount = d.amount * 0.12
+    #     if(d.item_tax_template == "CGST AND SGST 5 %"):
+    #         d.gst_amount = d.amount * 0.05
+    #     if(d.item_tax_template == "CGST AND SGST 0.1 %"):
+    #         d.gst_amount = d.amount * 0.001
+    #     if(d.item_tax_template == "CGST AND SGST 0 %"):
+    #         d.gst_amount = d.amount * 0  
+    #     if(d.item_tax_template == "IGST 12% Export - PC"):
+    #         d.gst_amount = d.amount * 0.12
+    #     if(d.item_tax_template == "IGST 18% Export - PC"):
+    #         d.gst_amount = d.amount * 0.18
+    #     if(d.item_tax_template == "IGST 18 %"):
+    #         d.gst_amount = d.amount * 0.18
+    #     if(d.item_tax_template == "IGST 28 %"):
+    #         d.gst_amount = d.amount * 0.28
+    #     if(d.item_tax_template == "IGST 12 %"):
+    #         d.gst_amount = d.amount * 0.12
+    #     if(d.item_tax_template == "IGST 5 %"):
+    #         d.gst_amount = d.amount * 0.05
+    #     if(d.item_tax_template == "IGST 0.1 %"):
+    #         d.gst_amount = d.amount * 0.001
+    #     if(d.item_tax_template == "IGST 0 %"):
+    #         d.gst_amount = d.amount * 0 
+    #     if not d.item_tax_template:
+    #         d.gst_amount = 0
     
-        d.net_amount_total = d.amount + d.gst_amount
+    #     d.net_amount_total = d.amount + d.gst_amount
 def before_save(self, method):
     set_income_account(self)
 
